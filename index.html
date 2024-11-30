@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Rim</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            background: #222;
+            overflow-x: hidden;
+            transition: margin-left 0.3s ease;
+        }
+        .app {
+            width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        /* Navbar */
+        .section__navbar {
+            background: #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+        .navbar__header {
+            display: flex;
+            align-items: center;
+        }
+        .navbar__menu {
+            cursor: pointer;
+            margin-right: 10px;
+            z-index: 100;
+        }
+        .navbar__menu svg {
+            width: 24px;
+            height: 18px;
+            fill: #fff;
+        }
+        .navbar__title {
+            font-size: 1.5em;
+            margin: 0;
+            color: #8c00ff;
+            z-index: 200;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: -250px; /* Start off-screen */
+            background: #444;
+            overflow-x: hidden;
+            transition: 0.3s;
+            z-index: 50;
+            padding-top: 60px;
+        }
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 1.2em;
+            color: #ddd;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background: #555;
+            color: #fff;
+        }
+        .sidebar .closebtn {
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            font-size: 36px;
+            cursor: pointer;
+            color: #ddd;
+            z-index: 100;
+        }
+
+        /* Main Content */
+        .main-content {
+            transition: margin-left 0.3s ease;
+            padding: 20px;
+        }
+        .main-content.shifted {
+            margin-left: 250px;
+        }
+
+        /* Header */
+        .section__header {
+            text-align: center;
+            padding: 80px 20px;
+            background: #333;
+            position: relative;
+            overflow: hidden;
+        }
+        .header__title {
+            font-size: 4em;
+            margin: 0;
+            animation: fadeIn 2s ease-in-out;
+            color: #8c00ff;
+        }
+        .header__description {
+            font-size: 1.5em;
+            margin: 20px 0;
+            opacity: 0.8;
+        }
+        .join_discord_button {
+            display: inline-block;
+            padding: 15px 30px;
+            margin-top: 20px;
+            background: #8c00ff;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .join_discord_button:hover {
+            background: #6c00cc;
+            transform: scale(1.05);
+        }
+
+        /* Sections */
+        .section__about, .section__shop, .section__reviews {
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .section__about .about__title, 
+        .section__shop .shop__title, 
+        .section__reviews .reviews__title {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #8c00ff;
+        }
+        .about__description, 
+        .shop__description, 
+        .reviews__description {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            color: #ddd;
+        }
+
+        /* Cards */
+        .about__cards, .shop__cards, .reviews__cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .about__info, .shop__card, .reviews__card {
+            background: #555;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .about__info:hover, .shop__card:hover, .reviews__card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+        .about__info__title, 
+        .shop__card__title, 
+        .reviews__card__name {
+            font-size: 1.6em;
+            margin: 10px 0;
+            color: #8c00ff;
+        }
+        .about__info__description, 
+        .shop__card__description, 
+        .reviews__card__review {
+            font-size: 1em;
+            margin: 10px 0;
+            color: #ddd;
+        }
+        .shop__card__purchase {
+            background: #8c00ff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            border: none;
+            font-size: 1.1em;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .shop__card__purchase:hover {
+            background: #6c00cc;
+            transform: scale(1.05);
+        }
+        .shop__card__price {
+            font-size: 1.3em;
+            margin-top: 10px;
+            color: #8c00ff;
+        }
+        .reviews__stars {
+            margin: 10px 0;
+        }
+        .reviews__stars .fa-star {
+            color: #ffd700;
+            font-size: 1.5em;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Shop Section */
+        .section__shop {
+            position: relative;
+        }
+
+        .shop__description {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #ddd;
+            font-weight: bold;
+        }
+
+        .shop__closed-notice {
+            background: #ff4444;
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+
+    <!-- Sidebar -->
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleNav()">&times;</a>
+        <a href="#home" onclick="closeNav()">Home</a>
+        <a href="#feature" onclick="closeNav()">Features</a>
+        <a href="#upgrade" onclick="closeNav()">Shop</a>
+        <a href="#reviews" onclick="closeNav()">Reviews</a>
+    </div>
+
+    <!-- Navbar -->
+    <div class="section__navbar">
+        <div class="navbar">
+            <div class="navbar__header">
+                <div class="navbar__menu" onclick="toggleNav()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="14" viewBox="0 0 20 14"><path d="M0 1h20v2H0V1zm0 5h20v2H0V6zm0 5h20v2H0v-2z"/></svg>
+                </div>
+                <h1 class="navbar__title">RIM</h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="main-content">
+
+        <!-- Header -->
+        <header class="section__header" id="home">
+            <h1 class="header__title">Rim</h1>
+            <p class="header__description">#1 Spammer</p>
+            <button class="join_discord_button">Join Our Discord</button>
+        </header>
+
+        <!-- About Section -->
+        <div id="feature" class="section__about">
+            <h1 class="about__title">Features</h1>
+            <p class="about__description">Learn More About What We Offer.</p>
+            <div class="about__cards">
+                <div class="about__info">
+                    <h2 class="about__info__title">🛡️</h2>
+                    <h2 class="about__info__title">Secure</h2>
+                    <p class="about__info__description">Our Spammer Is 100% Secure And No Info Is Saved.</p>
+                </div>
+                <div class="about__info">
+                    <h2 class="about__info__title">⚡</h2>
+                    <h2 class="about__info__title">Fast</h2>
+                    <p class="about__info__description">Experience lightning-fast speeds with our service.</p>
+                </div>
+                <div class="about__info">
+                    <h2 class="about__info__title">🎯</h2>
+                    <h2 class="about__info__title">Free</h2>
+                    <p class="about__info__description">Our Team Works On Making Our Product As Good And Fast As Possible Even For Free.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shop Section -->
+        <div id="upgrade" class="section__shop">
+            <h1 class="shop__title">Shop</h1>
+            <p class="shop__description">Our store is currently closed. Please check back later!</p>
+            <div class="shop__closed-notice">
+                <p>Store Closed</p>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div id="reviews" class="section__reviews">
+            <h1 class="reviews__title">Reviews</h1>
+            <p class="reviews__description">What our users say</p>
+            <div class="reviews__cards">
+                <div class="reviews__card">
+                    <h2 class="reviews__card__name">mailstealers</h2>
+                    <div class="reviews__card__review">WORKS HOLY ITS FAST</div>
+                    <div class="reviews__stars">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                </div>
+                <div class="reviews__card">
+                    <h2 class="reviews__card__name">avatheukegirl</h2>
+                    <div class="reviews__card__review">Really Good, Owner Don't Really Care About money but if u want extra stuff it cost him so it will cost you sadly but other then that great he welcomed me from the start</div>
+                    <div class="reviews__stars">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                </div>
+                <div class="reviews__card">
+                    <h2 class="reviews__card__name">alitanjiro</h2>
+                    <div class="reviews__card__review">Excellent tool, very efficient and easy to use!</div>
+                    <div class="reviews__stars">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                </div>
+                <div class="reviews__card">
+                    <h2 class="reviews__card__name">techguru</h2>
+                    <div class="reviews__card__review">Good performance, but the interface could be improved.</div>
+                    <div class="reviews__stars">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                </div>
+                <div class="reviews__card">
+                    <h2 class="reviews__card__name">777demon</h2>
+                    <div class="reviews__card__review">Very satisfied with the purchase. Worth the money!</div>
+                    <div class="reviews__stars">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Rim. All rights reserved.</p>
+    </footer>
+
+</div>
+
+<!-- JavaScript -->
+<script>
+    function toggleNav() {
+        var sidebar = document.getElementById("mySidebar");
+        var mainContent = document.getElementById("mainContent");
+        if (sidebar.style.left === "0px") {
+            sidebar.style.left = "-250px";
+            mainContent.classList.remove("shifted");
+        } else {
+            sidebar.style.left = "0px";
+            mainContent.classList.add("shifted");
+        }
+    }
+
+    function closeNav() {
+        var sidebar = document.getElementById("mySidebar");
+        var mainContent = document.getElementById("mainContent");
+        sidebar.style.left = "-250px";
+        mainContent.classList.remove("shifted");
+    }
+</script>
+
+</body>
+</html>
